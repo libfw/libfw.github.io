@@ -1,0 +1,7 @@
+baseURL = "https://libfw.github.io/"
+languageCode = "en-us"
+title = "libfw"
+
+[params]
+  description = "Dependency-free C libraries for network policy — and the tooling around them."
+  docsURL = "https://libfw.github.io/docs/"

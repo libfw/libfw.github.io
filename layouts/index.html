@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>libfw — network policy for C</title>
+<meta name="description" content="{{ .Site.Params.description }}" />
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #30363d; --fg: #e6edf3;
+    --muted: #8b949e; --accent: #58a6ff; --accent2: #3fb950;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header.hero { text-align: center; padding: 88px 20px 56px; }
+  .hero h1 { font-size: 3rem; margin: 0 0 .3em; letter-spacing: -1px; }
+  .hero p { font-size: 1.25rem; color: var(--muted); max-width: 640px; margin: 0 auto 1.6em; }
+  .cta a {
+    display: inline-block; margin: 0 6px; padding: 10px 20px; border-radius: 8px;
+    border: 1px solid var(--border); font-weight: 600;
+  }
+  .cta a.primary { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; padding: 24px 0 8px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column;
+  }
+  .card h3 { margin: 0 0 .2em; font-size: 1.2rem; }
+  .card .lang { font-size: .75rem; color: var(--accent2); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+  .card p { color: var(--muted); margin: .5em 0 1em; flex: 1; }
+  .card .links a { font-size: .9rem; margin-right: 14px; }
+  .flow { text-align: center; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 28px 0; overflow-x: auto; white-space: pre; }
+  footer { text-align: center; color: var(--muted); padding: 48px 20px; font-size: .9rem; }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <h1>libfw</h1>
+      <p>{{ .Site.Params.description }}</p>
+      <div class="cta">
+        <a class="primary" href="{{ .Site.Params.docsURL }}">Documentation →</a>
+        <a href="https://github.com/libfw">GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="flow">c-hcl ──▶ c-fw ──▶ socket_vmnet ──UNIX socket──▶ fw-ui
+(HCL)     (filter)   (vmnet daemon)    (JSON/SSE)   (web UI)</div>
+
+    <section class="grid">
+      <div class="card">
+        <span class="lang">C</span>
+        <h3>c-hcl</h3>
+        <p>A tiny, dependency-free parser for the declarative subset of HCL —
+           attributes and labeled blocks into an immutable AST.</p>
+        <div class="links">
+          <a href="https://github.com/libhcl/c-hcl">repo</a>
+          <a href="{{ .Site.Params.docsURL }}c-hcl/">docs</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="lang">C</span>
+        <h3>c-fw</h3>
+        <p>An embeddable stateful L3/L4 packet filter: a first-match ACL,
+           connection tracking, and an HCL front-end. Matches raw frames.</p>
+        <div class="links">
+          <a href="https://github.com/libfw/c-fw">repo</a>
+          <a href="{{ .Site.Params.docsURL }}c-fw/">docs</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="lang">C</span>
+        <h3>socket_vmnet</h3>
+        <p>The macOS <code>vmnet</code> daemon that enforces a c-fw policy on VM
+           traffic, with a live JSON control plane over a UNIX socket.</p>
+        <div class="links">
+          <a href="https://github.com/tannevaled/socket_vmnet">repo</a>
+          <a href="{{ .Site.Params.docsURL }}socket-vmnet/">docs</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="lang">Go · Svelte</span>
+        <h3>fw-ui</h3>
+        <p>A real-time web UI for the firewall: live rate graphs, an event log,
+           and a rule editor. Huma API + Svelte/DaisyUI, one static binary.</p>
+        <div class="links">
+          <a href="https://github.com/libfw/fw-ui">repo</a>
+          <a href="{{ .Site.Params.docsURL }}fw-ui/">docs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Zero-dependency · BSD-3-Clause · built from source —
+    <a href="{{ .Site.Params.docsURL }}">read the docs</a>
+  </footer>
+</body>
+</html>
