@@ -1,7 +1,29 @@
 baseURL = "https://libfw.github.io/"
-languageCode = "en-us"
+locale = "en-us"
 title = "libfw"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap", "404"]
+
+[markup.goldmark.renderer]
+  unsafe = true
 
 [params]
-  description = "Dependency-free C libraries for network policy — and the tooling around them."
+  description = "Dependency-free, embeddable C libraries for stateful network policy."
   docsURL = "https://libfw.github.io/docs/"
+
+# Each repo card. "lang" = the implementation language; "type" = lib vs cli/app.
+# "ci" = true when the repo has a CI workflow (badge); otherwise a license badge
+# is shown. These are C/Go repos — no Go-coverage badges unless measured.
+[[params.repos]]
+  name = "c-fw"
+  lang = "C"
+  type = "lib"
+  summary = "An embeddable stateful L3/L4 packet filter for C"
+  result = "First-match ACL, connection tracking (conntrack), and an optional HCL front-end, matching raw ethernet frames (const uint8_t *, size_t) — so it has no dependency on any particular packet source. The firewall core extracted from socket_vmnet. Zero third-party code; the HCL front-end uses libhcl/c-hcl as a submodule."
+  ci = false
+[[params.repos]]
+  name = "fw-ui"
+  lang = "Go · Svelte"
+  type = "app"
+  summary = "Real-time web UI for the libfw firewall"
+  result = "A live console over socket_vmnet's JSON control plane: per-rule hit counts, allow/deny rates, a streaming event log and conntrack state, plus on-the-fly rule editing. Huma REST API + SSE backend, Svelte/DaisyUI frontend embedded via go:embed into a single static binary. In progress: the control-plane client is in place; the HTTP/SSE server and browser frontend are being built."
+  ci = true
