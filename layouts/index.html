@@ -1,84 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ .Site.Title }} — embeddable stateful packet filtering for C</title>
-<meta name="description" content="libfw: dependency-free, embeddable C libraries for stateful L3/L4 network policy — a first-match ACL, connection tracking (conntrack) and an HCL front-end, extracted from socket_vmnet. BSD-3-Clause, zero third-party code.">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>libfw — network policy for C</title>
+<meta name="description" content="{{ .Site.Params.description }}" />
 <style>
   :root { /* light (default) */
-    --bg: #ffffff; --fg: #1b1f24; --muted: #57606a; --card: #f6f8fa;
-    --border: #d0d7de; --accent: #e8590c; --accent-fg: #ffffff;
-    --lib: #e8590c; --app: #9a6700;
+    --bg: #ffffff; --panel: #f6f8fa; --border: #d0d7de; --fg: #1f2328;
+    --muted: #656d76; --accent: #0969da; --accent2: #1a7f37;
   }
   /* follow the OS when the visitor hasn't picked explicitly */
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) {
-      --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --card: #161b22;
-      --border: #30363d; --accent: #ff922b; --accent-fg: #0d1117;
-      --lib: #ff922b; --app: #d29922;
+      --bg: #0d1117; --panel: #161b22; --border: #30363d; --fg: #e6edf3;
+      --muted: #8b949e; --accent: #58a6ff; --accent2: #3fb950;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --card: #161b22;
-    --border: #30363d; --accent: #ff922b; --accent-fg: #0d1117;
-    --lib: #ff922b; --app: #d29922;
+    --bg: #0d1117; --panel: #161b22; --border: #30363d; --fg: #e6edf3;
+    --muted: #8b949e; --accent: #58a6ff; --accent2: #3fb950;
   }
   :root[data-theme="light"] {
-    --bg: #ffffff; --fg: #1b1f24; --muted: #57606a; --card: #f6f8fa;
-    --border: #d0d7de; --accent: #e8590c; --accent-fg: #ffffff;
-    --lib: #e8590c; --app: #9a6700;
+    --bg: #ffffff; --panel: #f6f8fa; --border: #d0d7de; --fg: #1f2328;
+    --muted: #656d76; --accent: #0969da; --accent2: #1a7f37;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  }
   .theme-toggle {
     position: fixed; top: 14px; right: 14px; z-index: 10;
-    background: var(--card); color: var(--fg); border: 1px solid var(--border);
+    background: var(--panel); color: var(--fg); border: 1px solid var(--border);
     border-radius: 8px; padding: 6px 12px; font: inherit; font-size: .85rem; cursor: pointer;
   }
   .theme-toggle:hover { border-color: var(--accent); }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
-  header { padding: 72px 0 32px; text-align: center; }
-  .logo { width: 88px; height: 88px; margin: 0 auto 18px; display: block; }
-  h1 { font-size: 2.6rem; margin: 0 0 .3em; letter-spacing: -.02em; }
-  .tagline { font-size: 1.2rem; color: var(--muted); margin: 0 auto; max-width: 680px; }
-  .pills { margin: 22px 0 0; }
-  .pill {
-    display: inline-block; margin: 4px; padding: 3px 10px; font-size: .82rem;
-    color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-  .cta { margin: 30px 0 0; }
-  .btn {
-    display: inline-block; padding: 10px 18px; margin: 4px; border-radius: 8px; text-decoration: none;
-    font-weight: 600; border: 1px solid var(--border);
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  header.hero { text-align: center; padding: 88px 20px 56px; }
+  .hero h1 { font-size: 3rem; margin: 0 0 .3em; letter-spacing: -1px; }
+  .hero p { font-size: 1.25rem; color: var(--muted); max-width: 640px; margin: 0 auto 1.6em; }
+  .cta a {
+    display: inline-block; margin: 0 6px; padding: 10px 20px; border-radius: 8px;
+    border: 1px solid var(--border); font-weight: 600;
   }
-  .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
-  .btn.ghost { color: var(--fg); background: transparent; }
-  .lead { color: var(--fg); max-width: 800px; margin: 8px auto 0; text-align: center; }
-  .lead code { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; }
-  .flow { text-align: center; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 28px auto 0; overflow-x: auto; white-space: pre; max-width: 800px; }
-  h2.section { text-align: center; margin: 40px 0 4px; font-size: 1.4rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 16px 0 8px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; }
-  .card h3 { margin: 0 0 .35em; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .card h3 a { text-decoration: none; color: var(--accent); }
-  .card .accel { color: var(--muted); font-size: .85rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; margin: 0 0 .6em; }
-  .card p { margin: 0 0 .8em; color: var(--fg); font-size: .95rem; }
-  .card .badges { margin-top: auto; }
-  .card .badges img { height: 20px; vertical-align: middle; }
-  .card h3 .tags { display: inline-flex; gap: 6px; flex-shrink: 0; }
-  .lang { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
-  .type { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
-  .type.lib { color: var(--lib); border-color: var(--lib); }
-  .type.app { color: var(--app); border-color: var(--app); }
-  .principles { color: var(--muted); text-align: center; padding: 10px 0 0; max-width: 820px; margin: 0 auto; }
-  footer { color: var(--muted); text-align: center; padding: 40px 0 56px; font-size: .9rem; }
-  a { color: var(--accent); }
+  .cta a.primary { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; padding: 24px 0 8px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column;
+  }
+  .card h3 { margin: 0 0 .2em; font-size: 1.2rem; }
+  .card .lang { font-size: .75rem; color: var(--accent2); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+  .card p { color: var(--muted); margin: .5em 0 1em; flex: 1; }
+  .card .links a { font-size: .9rem; margin-right: 14px; }
+  .flow { text-align: center; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 28px 0; overflow-x: auto; white-space: pre; }
+  footer { text-align: center; color: var(--muted); padding: 48px 20px; font-size: .9rem; }
 </style>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <script>
   (function () {
     try {
@@ -87,6 +67,7 @@
     } catch (e) {}
   })();
 </script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
   <button class="theme-toggle" onclick="fwToggleTheme()" aria-label="Toggle light or dark theme">◐ theme</button>
@@ -99,76 +80,68 @@
       try { localStorage.setItem('fw-theme', next); } catch (e) {}
     }
   </script>
-
-  <header class="wrap">
-    <img class="logo" src="/img/logo.svg" alt="libfw logo" width="88" height="88">
-    <h1>libfw</h1>
-    <p class="tagline">Dependency-free, embeddable <strong>C libraries</strong> for stateful
-      <strong>L3/L4 network policy</strong> — a first-match <code>ACL</code>, connection tracking
-      (<code>conntrack</code>) and an <code>HCL</code> front-end, extracted from
-      <code>socket_vmnet</code>.</p>
-    <div class="pills">
-      <span class="pill">written in C</span>
-      <span class="pill">zero third-party code</span>
-      <span class="pill">stateful (conntrack)</span>
-      <span class="pill">HCL or JSON policy</span>
-      <span class="pill">built from source</span>
-      <span class="pill">BSD-3-Clause</span>
-    </div>
-    <div class="cta">
-      <a class="btn primary" href="{{ .Site.Params.docsURL }}">Documentation</a>
-      <a class="btn ghost" href="https://github.com/libfw">GitHub</a>
+  <header class="hero">
+    <div class="wrap">
+      <h1>libfw</h1>
+      <p>{{ .Site.Params.description }}</p>
+      <div class="cta">
+        <a class="primary" href="{{ .Site.Params.docsURL }}">Documentation →</a>
+        <a href="https://github.com/libfw">GitHub</a>
+      </div>
     </div>
   </header>
 
   <main class="wrap">
-    <p class="lead"><strong>libfw</strong> is the firewall core extracted from
-      <a href="https://github.com/lima-vm/socket_vmnet">socket_vmnet</a>'s ACL work, packaged as a
-      small, reusable C library. It matches and tracks raw ethernet frames
-      (<code>const uint8_t *frame, size_t len</code>), so it has no dependency on any particular
-      packet source — drive it from vmnet, TUN/TAP, pcap or a userspace proxy. The ACL is
-      first-match-wins over ethernet / IPv4 / IPv6 / TCP / UDP / ICMP; conntrack lets the return
-      traffic of an allowed flow pass without an explicit reverse rule, with caller-supplied time so
-      it is deterministic and unit-testable.</p>
-
-    <p class="lead"><strong>No vendored dependencies.</strong> Policies load from a compact JSON
-      ruleset via a tiny built-in parser, or from <code>HCL</code> through the
-      <a href="https://github.com/libhcl/c-hcl">libhcl/c-hcl</a> submodule (the declarative subset of
-      HCL — attributes and labeled blocks, no expressions or interpolation). Everything builds from
-      source; the only third-party code is the optional c-hcl submodule. BSD-3-Clause throughout.</p>
-
     <div class="flow">c-hcl ──▶ c-fw ──▶ socket_vmnet ──UNIX socket──▶ fw-ui
- (HCL)    (filter)  (vmnet daemon)   (JSON/SSE)    (web UI)</div>
+(HCL)     (filter)   (vmnet daemon)    (JSON/SSE)   (web UI)</div>
 
-    <h2 class="section">Repositories</h2>
     <section class="grid">
-      {{ range .Site.Params.repos }}
-      <article class="card">
-        <h3>
-          <a href="https://github.com/libfw/{{ .name }}"><code>{{ .name }}</code></a>
-          <span class="tags"><span class="lang">{{ .lang }}</span><span class="type {{ .type }}">{{ .type }}</span></span>
-        </h3>
-        <p class="accel">{{ .summary }}</p>
-        <p>{{ .result }}</p>
-        <div class="badges">
-          {{ if .ci }}
-          <a href="https://github.com/libfw/{{ .name }}/actions/workflows/ci.yml"><img src="https://github.com/libfw/{{ .name }}/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-          {{ end }}
-          <a href="https://github.com/libfw/{{ .name }}/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-BSD--3--Clause-blue" alt="BSD-3-Clause"></a>
+      <div class="card">
+        <span class="lang">C</span>
+        <h3>c-hcl</h3>
+        <p>A tiny, dependency-free parser for the declarative subset of HCL —
+           attributes and labeled blocks into an immutable AST.</p>
+        <div class="links">
+          <a href="https://github.com/libhcl/c-hcl">repo</a>
+          <a href="{{ .Site.Params.docsURL }}c-hcl/">docs</a>
         </div>
-      </article>
-      {{ end }}
+      </div>
+      <div class="card">
+        <span class="lang">C</span>
+        <h3>c-fw</h3>
+        <p>An embeddable stateful L3/L4 packet filter: a first-match ACL,
+           connection tracking, and an HCL front-end. Matches raw frames.</p>
+        <div class="links">
+          <a href="https://github.com/libfw/c-fw">repo</a>
+          <a href="{{ .Site.Params.docsURL }}c-fw/">docs</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="lang">C</span>
+        <h3>socket_vmnet</h3>
+        <p>The macOS <code>vmnet</code> daemon that enforces a c-fw policy on VM
+           traffic, with a live JSON control plane over a UNIX socket.</p>
+        <div class="links">
+          <a href="https://github.com/tannevaled/socket_vmnet">repo</a>
+          <a href="{{ .Site.Params.docsURL }}socket-vmnet/">docs</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="lang">Go · Svelte</span>
+        <h3>fw-ui</h3>
+        <p>A real-time web UI for the firewall: live rate graphs, an event log,
+           and a rule editor. Huma API + Svelte/DaisyUI, one static binary.</p>
+        <div class="links">
+          <a href="https://github.com/libfw/fw-ui">repo</a>
+          <a href="{{ .Site.Params.docsURL }}fw-ui/">docs</a>
+        </div>
+      </div>
     </section>
-    <p class="principles">Every library here is plain C with zero third-party code (the optional HCL
-      front-end pulls in the <a href="https://github.com/libhcl/c-hcl">c-hcl</a> submodule), built
-      from source, and held to a deterministic, unit-testable design — time and packet bytes are
-      caller-supplied. The companion <code>fw-ui</code> is a Go + Svelte console over the same policy.
-      BSD-3-Clause throughout.</p>
   </main>
 
-  <footer class="wrap">
+  <footer>
     Zero-dependency · BSD-3-Clause · built from source —
-    <a href="https://github.com/libfw">github.com/libfw</a>
+    <a href="{{ .Site.Params.docsURL }}">read the docs</a>
   </footer>
 </body>
 </html>
