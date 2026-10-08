@@ -1,5 +1,8 @@
 baseURL = "https://libfw.github.io/"
-languageCode = "en-us"
+locale = "en-us"
+# A one-page landing: no tags or categories, so no taxonomy pages to lay out
+# (without this, Hugo warns there is no layout for them).
+disableKinds = ["taxonomy", "term"]
 title = "libfw"
 
 [params]
